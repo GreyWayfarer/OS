@@ -7,24 +7,7 @@ int main(int argc, char **argv) {
     
     string arg="";
     int pid,ppid,rez;
-    string adr ="../LR2/main";
         struct sockaddr_in server, client;
-    char *err;
-    void *handle = dlopen("./libs/libinfo.so", RTLD_LAZY);
-    if (!handle) {
-	fputs(dlerror(), stderr);
-	exit(-1);
-    }
-    if ((err = dlerror()) != NULL ) {
-	fprintf(stderr, "%s\n", err);
-	exit(-1);
-    }
-    typedef string (*f_info)();
-    f_info info = (f_info)dlsym(handle,"info");
-    if ((err = dlerror()) != NULL) {
-        fprintf (stderr, "%s\n", err);
-        exit(-1);
-    }
     int sock = socket(AF_INET, SOCK_STREAM, 0);
     int enable = 1;
     if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &enable, sizeof(int)) < 0)
@@ -92,14 +75,31 @@ int main(int argc, char **argv) {
                 } else {
                     strcpy(otv,"Сигнал не получен!\n");
                 }
-            } else if (arg=="-info"){
+            } else {
+		char *err;
+		void *handle = dlopen("./libs/libinfo.so", RTLD_LAZY);
+		if (!handle) {
+			fputs(dlerror(), stderr);
+			exit(-1);
+		}
+		if ((err = dlerror()) != NULL ) {
+			fprintf(stderr, "%s\n", err);
+			exit(-1);
+		}
+		typedef string (*f_info)();
+		f_info info = (f_info)dlsym(handle,"info");
+		if ((err = dlerror()) != NULL) {
+			fprintf (stderr, "%s\n", err);
+			exit(-1);
+		}
 		obuf = info();
                 strcpy(otv,obuf.c_str());
+		dlclose(handle);
             }
              send(newsock, otv, sizeof(otv), 0);
         }
         close(newsock);
-	dlclose(handle);
+
     }
     close(sock);
 
