@@ -1,0 +1,17 @@
+[Unit]
+Description=Daemon_LiteSH
+
+
+[Service]
+Type=simple
+User=wanderer
+Group=wanderer
+ExecStart=/home/wanderer/OS/LR6/main
+ExecReload=/home/wanderer/OS/LR6/main
+KillMode=control-group
+TimeoutStartSec=120
+OOMScoreAdjust=-1000
+
+
+[Install]
+WantedBy=multi-user.target
