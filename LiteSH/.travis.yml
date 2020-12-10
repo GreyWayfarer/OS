@@ -2,4 +2,4 @@ language: c++
 dist: xenial
 os: linux
 compiler: gcc
-script: make && git ls-files | xargs clang-format -i && git diff --exit-code
+script: make && git diff --exit-code
