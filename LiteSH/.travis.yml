@@ -1,5 +1,0 @@
-language: c++
-dist: xenial
-os: linux
-compiler: gcc
-script: make && git diff --exit-code
